@@ -1,0 +1,19 @@
+{
+  "name": "js-poznamkovy-blok",
+  "version": "1.0.0",
+  "description": "Chytrá poznámbková aplikace s autentifikací",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "notes",
+    "app"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}
