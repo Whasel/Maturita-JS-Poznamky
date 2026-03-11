@@ -228,17 +228,44 @@ function logout() {
 }
 
 // Smazání účtu
-function deleteAccount() {
+function showDeleteAccountModal() {
+    document.getElementById('delete-account-modal').classList.remove('hidden');
+    document.getElementById('delete-account-password').focus();
+    document.getElementById('delete-account-password').value = '';
+    document.getElementById('delete-account-error').classList.add('hidden');
+    document.getElementById('delete-account-error').textContent = '';
+}
+
+function closeDeleteAccountModal() {
+    document.getElementById('delete-account-modal').classList.add('hidden');
+    document.getElementById('delete-account-password').value = '';
+    document.getElementById('delete-account-error').classList.add('hidden');
+}
+
+function confirmDeleteAccount() {
+    const password = document.getElementById('delete-account-password').value;
+    const errorElement = document.getElementById('delete-account-error');
     const username = Database.getCurrentUser();
-    
-    if (confirm(`Opravdu chceš smazat účet "${username}"? Tuto akci nelze vrátit zpět!`)) {
-        if (confirm('Jseš si jistý/á? Všechna data budou smazána!')) {
-            Database.deleteUser(username);
-            Database.logout();
-            alert('❌ Účet byl smazán.');
-            render();
-        }
+
+    if (!password) {
+        errorElement.textContent = '❌ Prosím, zadejte vaše heslo!';
+        errorElement.classList.remove('hidden');
+        return;
     }
+
+    // Ověříme heslo
+    if (!Database.authenticateUser(username, password)) {
+        errorElement.textContent = '❌ Heslo je nesprávné!';
+        errorElement.classList.remove('hidden');
+        return;
+    }
+
+    // Heslo je správné - smaž účet
+    Database.deleteUser(username);
+    Database.logout();
+    closeDeleteAccountModal();
+    alert('✅ Účet был úspěšně smazán. Všechny vaše poznámky a data byla smazána.');
+    render();
 }
 
 // ==================== SPRÁVA POZNÁMEK ====================
@@ -377,4 +404,16 @@ function render() {
 }
 
 // Inicializace při načtení stránky
-document.addEventListener('DOMContentLoaded', render);
+document.addEventListener('DOMContentLoaded', function() {
+    render();
+    
+    // Event listener pro Enter klávesu v modalu pro smazání účtu
+    const deletePasswordInput = document.getElementById('delete-account-password');
+    if (deletePasswordInput) {
+        deletePasswordInput.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                confirmDeleteAccount();
+            }
+        });
+    }
+});

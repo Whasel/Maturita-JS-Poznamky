@@ -46,7 +46,7 @@
             <header>
                 <h2 id="welcome-message"></h2>
                 <div class="user-controls">
-                    <button onclick="deleteAccount()" class="btn-danger">🗑️ Zrušit účet</button>
+                    <button onclick="showDeleteAccountModal()" class="btn-danger">🗑️ Zrušit účet</button>
                     <button onclick="logout()" class="btn-outline">Odhlásit se</button>
                 </div>
             </header>
@@ -72,6 +72,23 @@
             <!-- SEZNAM POZNÁMEK -->
             <div id="notes-list" class="notes-list">
                 <p class="no-notes">Žádné poznámky. Začněte tím, že si poznamenáte něco!</p>
+            </div>
+        </div>
+    </div>
+
+    <!--MODAL PRO SMAZÁNÍ ÚČTU -->
+    <div id="delete-account-modal" class="modal hidden">
+        <div class="modal-content">
+            <h3>Potvrzení smazání účtu</h3>
+            <p class="modal-warning">⚠️ <strong>POZOR!</strong> Toto je trvalá operace. Všechny vaše poznámky a účet budou smazány.</p>
+            <div class="modal-form">
+                <p>Pro potvrzení prosím zadejte vaše <strong>heslo</strong>:</p>
+                <input type="password" id="delete-account-password" placeholder="Zadejte heslo..." autocomplete="off">
+                <div id="delete-account-error" class="modal-error hidden"></div>
+                <div class="modal-buttons">
+                    <button onclick="confirmDeleteAccount()" class="btn-danger">Smazat účet</button>
+                    <button onclick="closeDeleteAccountModal()" class="btn-outline">Zrušit</button>
+                </div>
             </div>
         </div>
     </div>
