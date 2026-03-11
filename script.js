@@ -1,3 +1,14 @@
+// ==================== DEBUG ==================== 
+console.log('📱 Aplikace se načítá...');
+console.log('🔐 CryptoJS dostupný?', typeof CryptoJS !== 'undefined' ? '✅ ANO' : '❌ NE');
+console.log('💾 localStorage dostupný?', typeof localStorage !== 'undefined' ? '✅ ANO' : '❌ NE');
+
+// Kontrola CryptoJS
+if (typeof CryptoJS === 'undefined') {
+    console.error('❌ CHYBA: CryptoJS se nenačítá! Zkontrolujte internetové připojení.');
+    alert('❌ Chyba: Knihovna CryptoJS se nenačítá. Zkontrolujte internetové připojení.');
+}
+
 // ==================== HASHOVÁNÍ HESEL ====================
 // Bezpečné hashování hesel pomocí SHA-256
 function hashPassword(password) {
