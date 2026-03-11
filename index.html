@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moje Chytré Poznámky</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- CryptoJS pro bezpečné hashování hesel -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+</head>
+<body>
+
+    <div class="container">
+        <!-- PŘIHLÁŠENÍ / REGISTRACE -->
+        <div id="auth-section" class="card">
+            <h1>Vítejte v aplikaci</h1>
+            
+            <div id="auth-choice" class="auth-choice">
+                <p>Co chceš udělat?</p>
+                <button onclick="showLogin()" class="btn-primary">Přihlásit se</button>
+                <button onclick="showRegister()" class="btn-secondary">Zaregistrovat se</button>
+            </div>
+
+            <!-- LOGIN FORMULÁŘ -->
+            <div id="login-form" class="auth-form hidden">
+                <h2>Přihlášení</h2>
+                <input type="text" id="login-username" placeholder="Vaše uživatelské jméno...">
+                <input type="password" id="login-password" placeholder="Heslo...">
+                <button onclick="login()" class="btn-primary">Přihlásit</button>
+                <button onclick="showAuthChoice()" class="btn-outline">Zpět</button>
+            </div>
+
+            <!-- REGISTRACE FORMULÁŘ -->
+            <div id="register-form" class="auth-form hidden">
+                <h2>Registrace</h2>
+                <input type="text" id="register-username" placeholder="Vyberte uživatelské jméno...">
+                <input type="password" id="register-password" placeholder="Heslo...">
+                <input type="password" id="register-password-confirm" placeholder="Potvrzení hesla...">
+                <button onclick="register()" class="btn-primary">Zaregistrovat</button>
+                <button onclick="showAuthChoice()" class="btn-outline">Zpět</button>
+            </div>
+        </div>
+
+        <!-- APLIKACE (PO PŘIHLÁŠENÍ) -->
+        <div id="app-section" class="card hidden">
+            <header>
+                <h2 id="welcome-message"></h2>
+                <div class="user-controls">
+                    <button onclick="deleteAccount()" class="btn-danger">🗑️ Zrušit účet</button>
+                    <button onclick="logout()" class="btn-outline">Odhlásit se</button>
+                </div>
+            </header>
+            
+            <hr>
+
+            <!-- PŘIDÁNÍ POZNÁMKY -->
+            <div class="notes-input-section">
+                <h3>Přidat novou poznámku</h3>
+                <input type="text" id="note-title" placeholder="Nadpis poznámky..." maxlength="100">
+                <textarea id="note-input" placeholder="Napište vaši poznámku..."></textarea>
+                <button onclick="addNote()" class="btn-primary">➕ Přidat poznámku</button>
+            </div>
+
+            <hr>
+
+            <!-- FILTRY -->
+            <div class="notes-filter">
+                <button onclick="showAllNotes()" class="btn-filter active" id="filter-all">Všechny poznámky</button>
+                <button onclick="showOnlyStarred()" class="btn-filter" id="filter-starred">⭐ Pouze zvýrazněné</button>
+            </div>
+
+            <!-- SEZNAM POZNÁMEK -->
+            <div id="notes-list" class="notes-list">
+                <p class="no-notes">Žádné poznámky. Začněte tím, že si poznamenáte něco!</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

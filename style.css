@@ -1,0 +1,341 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 20px;
+    margin: 0;
+}
+
+.container {
+    width: 100%;
+    max-width: 450px;
+}
+
+.card {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    text-align: center;
+}
+
+.card h1 {
+    color: #333;
+    margin-bottom: 1.5rem;
+    font-size: 1.8rem;
+}
+
+.card h2 {
+    color: #555;
+    font-size: 1.4rem;
+    margin-bottom: 1.5rem;
+}
+
+.hidden {
+    display: none !important;
+}
+
+input {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    font-size: 1rem;
+    box-sizing: border-box;
+    transition: border-color 0.3s;
+}
+
+input:focus {
+    outline: none;
+    border-color: #667eea;
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 10px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 1rem;
+    transition: all 0.3s;
+}
+
+.btn-primary {
+    background-color: #667eea;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #5568d3;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.btn-secondary {
+    background-color: #48bb78;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background-color: #38a169;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(72, 187, 120, 0.4);
+}
+
+.btn-outline {
+    background-color: transparent;
+    border: 2px solid #ddd;
+    color: #666;
+}
+
+.btn-outline:hover {
+    border-color: #667eea;
+    color: #667eea;
+    background-color: #f8f9ff;
+}
+
+.btn-danger {
+    background-color: #f56565;
+    color: white;
+}
+
+.btn-danger:hover {
+    background-color: #e53e3e;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(245, 101, 101, 0.4);
+}
+
+/* AUTH SEKCE */
+.auth-choice {
+    display: flex;
+    flex-direction: column;
+}
+
+.auth-choice p {
+    color: #666;
+    margin-bottom: 20px;
+    font-size: 1.1rem;
+}
+
+.auth-form {
+    transition: all 0.3s;
+}
+
+/* APLIKAČNÍ SEKCE */
+#welcome-message {
+    color: #667eea;
+    font-size: 1.6rem;
+    margin-bottom: 1rem;
+}
+
+header {
+    margin-bottom: 1.5rem;
+}
+
+.user-controls {
+    display: flex;
+    gap: 10px;
+    margin-top: 1rem;
+}
+
+.user-controls button {
+    flex: 1;
+}
+
+hr {
+    border: none;
+    height: 1px;
+    background-color: #eee;
+    margin: 1.5rem 0;
+}
+
+#app-content {
+    color: #666;
+    line-height: 1.6;
+    font-size: 1rem;
+}
+
+p {
+    margin: 0.5rem 0;
+}
+
+/* ==================== POZNÁMKY ==================== */
+
+textarea {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    box-sizing: border-box;
+    resize: vertical;
+    min-height: 100px;
+    transition: border-color 0.3s;
+}
+
+textarea:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 8px rgba(102, 126, 234, 0.2);
+}
+
+#note-title {
+    width: 100%;
+    padding: 12px;
+    margin-bottom: 15px;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    font-size: 1rem;
+    box-sizing: border-box;
+    transition: border-color 0.3s;
+    font-weight: 600;
+}
+
+#note-title:focus {
+    outline: none;
+    border-color: #667eea;
+    box-shadow: 0 0 8px rgba(102, 126, 234, 0.2);
+}
+
+.notes-input-section {
+    text-align: left;
+    margin-bottom: 1.5rem;
+}
+
+.notes-input-section h3 {
+    color: #333;
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+}
+
+.notes-filter {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 1.5rem;
+}
+
+.btn-filter {
+    flex: 1;
+    padding: 10px;
+    border: 2px solid #ddd;
+    background-color: white;
+    color: #666;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s;
+}
+
+.btn-filter:hover {
+    border-color: #667eea;
+    color: #667eea;
+}
+
+.btn-filter.active {
+    background-color: #667eea;
+    color: white;
+    border-color: #667eea;
+}
+
+.notes-list {
+    max-height: 500px;
+    overflow-y: auto;
+    text-align: left;
+}
+
+.note-item {
+    background-color: #f9f9f9;
+    border-left: 4px solid #ddd;
+    padding: 15px;
+    margin-bottom: 12px;
+    border-radius: 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 10px;
+    transition: all 0.3s;
+}
+
+.note-item:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.note-item.starred {
+    background-color: #fffacd;
+    border-left-color: #ffd700;
+}
+
+.note-content {
+    flex: 1;
+}
+
+.note-title {
+    color: #333;
+    margin: 0 0 8px 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    word-break: break-word;
+}
+
+.note-text {
+    color: #666;
+    margin: 0 0 8px 0;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    word-break: break-word;
+}
+
+.note-date {
+    color: #999;
+    font-size: 0.85rem;
+}
+
+.note-actions {
+    display: flex;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.btn-star,
+.btn-delete {
+    background-color: transparent;
+    border: none;
+    font-size: 1.3rem;
+    cursor: pointer;
+    transition: transform 0.2s, opacity 0.2s;
+    padding: 5px;
+    opacity: 0.7;
+}
+
+.btn-star:hover,
+.btn-delete:hover {
+    opacity: 1;
+    transform: scale(1.2);
+}
+
+.no-notes {
+    text-align: center;
+    color: #999;
+    padding: 30px 15px;
+    font-style: italic;
+}
+
+header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.user-controls {
+    display: flex;
+    gap: 10px;
+}
