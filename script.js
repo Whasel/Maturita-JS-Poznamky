@@ -170,7 +170,7 @@ function showRegister() {
 // ==================== AUTENTIZACE ====================
 
 // Přihlášení uživatele
-function login() {
+async function login() {
     const username = document.getElementById('login-username').value.trim();
     const password = document.getElementById('login-password').value;
 
@@ -179,17 +179,29 @@ function login() {
         return;
     }
 
-    if (Database.authenticateUser(username, password)) {
-        Database.setCurrentUser(username);
-        render();
-    } else {
-        alert('❌ Nesprávné uživatelské jméno nebo heslo!');
-        document.getElementById('login-password').value = '';
+    try {
+        const response = await fetch('/api/users/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            Database.setCurrentUser(username);
+            render();
+        } else {
+            alert('❌ ' + data.error);
+            document.getElementById('login-password').value = '';
+        }
+    } catch (error) {
+        alert('❌ Chyba při přihlášení: ' + error.message);
     }
 }
 
 // Registrace nového uživatele
-function register() {
+async function register() {
     const username = document.getElementById('register-username').value.trim();
     const password = document.getElementById('register-password').value;
     const confirmPassword = document.getElementById('register-password-confirm').value;
@@ -204,7 +216,6 @@ function register() {
         return;
     }
 
-    // Kontrola, zda jméno obsahuje pouze alphanumerické znaky a podtržítko
     if (!/^[a-zA-Z0-9_]{3,}$/.test(username)) {
         alert('⚠️ Jméno může obsahovat pouze písmena, čísla a podtržítko!');
         return;
@@ -220,15 +231,26 @@ function register() {
         return;
     }
 
-    const result = Database.registerUser(username, password);
-    if (result.success) {
-        alert(result.message);
-        showLogin();
-        document.getElementById('register-username').value = '';
-        document.getElementById('register-password').value = '';
-        document.getElementById('register-password-confirm').value = '';
-    } else {
-        alert(result.message);
+    try {
+        const response = await fetch('/api/users/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password })
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            alert('✅ Registrace úspěšná! Nyní se můžete přihlásit.');
+            showLogin();
+            document.getElementById('register-username').value = '';
+            document.getElementById('register-password').value = '';
+            document.getElementById('register-password-confirm').value = '';
+        } else {
+            alert('❌ ' + data.error);
+        }
+    } catch (error) {
+        alert('❌ Chyba při registraci: ' + error.message);
     }
 }
 
@@ -282,7 +304,7 @@ function confirmDeleteAccount() {
 // ==================== SPRÁVA POZNÁMEK ====================
 
 // Přidá novou poznámku
-function addNote() {
+async function addNote() {
     const titleInput = document.getElementById('note-title');
     const textInput = document.getElementById('note-input');
     
@@ -299,24 +321,65 @@ function addNote() {
         return;
     }
 
-    Database.addNote(title, text);
-    titleInput.value = '';
-    textInput.value = '';
-    renderNotes();
+    try {
+        const response = await fetch('/api/notes', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                username: Database.getCurrentUser(),
+                title,
+                text,
+                starred: false,
+                createdAt: new Date().toISOString()
+            })
+        });
+
+        if (response.ok) {
+            titleInput.value = '';
+            textInput.value = '';
+            renderNotes();
+        } else {
+            alert('❌ Chyba při přidávání poznámky');
+        }
+    } catch (error) {
+        alert('❌ Chyba: ' + error.message);
+    }
 }
 
 // Smaže poznámku
-function deleteNote(noteId) {
+async function deleteNote(noteId) {
     if (confirm('Opravdu chceš smazat tuto poznámku?')) {
-        Database.deleteNote(noteId);
-        renderNotes();
+        try {
+            const response = await fetch(`/api/notes/${noteId}`, {
+                method: 'DELETE'
+            });
+
+            if (response.ok) {
+                renderNotes();
+            } else {
+                alert('❌ Chyba při mazání poznámky');
+            }
+        } catch (error) {
+            alert('❌ Chyba: ' + error.message);
+        }
     }
 }
 
 // Přepne zvýraznění poznámky
-function toggleStar(noteId) {
-    Database.toggleStarNote(noteId);
-    renderNotes();
+async function toggleStar(noteId) {
+    try {
+        const response = await fetch(`/api/notes/${noteId}/star`, {
+            method: 'PUT'
+        });
+
+        if (response.ok) {
+            renderNotes();
+        } else {
+            alert('❌ Chyba při zvýraznění poznámky');
+        }
+    } catch (error) {
+        alert('❌ Chyba: ' + error.message);
+    }
 }
 
 // Filtr: Zobrazit všechny poznámky
@@ -338,38 +401,47 @@ function showOnlyStarred() {
 }
 
 // Vykreslí seznam poznámek
-function renderNotes() {
+async function renderNotes() {
     const notesList = document.getElementById('notes-list');
-    let notes = Database.getNotes();
+    const username = Database.getCurrentUser();
 
-    // Filtrování
-    if (currentFilter === 'starred') {
-        notes = notes.filter(note => note.starred);
-    }
+    try {
+        const response = await fetch(`/api/notes?username=${username}`);
+        const notes = await response.json();
 
-    if (notes.length === 0) {
-        notesList.innerHTML = '<p class="no-notes">Žádné poznámky. Začněte tím, že si poznamenáte něco!</p>';
-        return;
-    }
+        // Filtrování
+        let filtered = notes;
+        if (currentFilter === 'starred') {
+            filtered = notes.filter(note => note.starred);
+        }
 
-    // Seřadíme poznámky od nejnovější
-    notes = notes.reverse();
+        if (filtered.length === 0) {
+            notesList.innerHTML = '<p class="no-notes">Žádné poznámky. Začněte tím, že si poznamenáte něco!</p>';
+            return;
+        }
 
-    notesList.innerHTML = notes.map(note => `
-        <div class="note-item ${note.starred ? 'starred' : ''}">
-            <div class="note-content">
-                <h4 class="note-title">${escapeHtml(note.title)}</h4>
-                <p class="note-text">${escapeHtml(note.text)}</p>
-                <small class="note-date">${formatDate(note.createdAt)}</small>
+        // Seřadíme poznámky od nejnovější
+        filtered = filtered.reverse();
+
+        notesList.innerHTML = filtered.map(note => `
+            <div class="note-item ${note.starred ? 'starred' : ''}">
+                <div class="note-content">
+                    <h4 class="note-title">${escapeHtml(note.title)}</h4>
+                    <p class="note-text">${escapeHtml(note.text)}</p>
+                    <small class="note-date">${formatDate(note.createdAt)}</small>
+                </div>
+                <div class="note-actions">
+                    <button onclick="toggleStar('${note._id}')" class="btn-star" title="${note.starred ? 'Zrušit zvýraznění' : 'Zvýraznit'}">
+                        ${note.starred ? '⭐' : '☆'}
+                    </button>
+                    <button onclick="deleteNote('${note._id}')" class="btn-delete" title="Smazat">🗑️</button>
+                </div>
             </div>
-            <div class="note-actions">
-                <button onclick="toggleStar(${note.id})" class="btn-star" title="${note.starred ? 'Zrušit zvýraznění' : 'Zvýraznit'}">
-                    ${note.starred ? '⭐' : '☆'}
-                </button>
-                <button onclick="deleteNote(${note.id})" class="btn-delete" title="Smazat">🗑️</button>
-            </div>
-        </div>
-    `).join('');
+        `).join('');
+    } catch (error) {
+        notesList.innerHTML = '<p class="no-notes">❌ Chyba při načítání poznámek</p>';
+        console.error('Chyba:', error);
+    }
 }
 
 // Pomocná funkce: Bezpečné vypsání textu (XSS protection)
@@ -388,7 +460,7 @@ function formatDate(dateString) {
 // ==================== VYKRESLOVÁNÍ STRÁNKY ====================
 
 // Hlavní render funkce
-function render() {
+async function render() {
     const currentUser = Database.getCurrentUser();
     const authSection = document.getElementById('auth-section');
     const appSection = document.getElementById('app-section');
@@ -398,7 +470,7 @@ function render() {
         authSection.classList.add('hidden');
         appSection.classList.remove('hidden');
         document.getElementById('welcome-message').textContent = `👋 Vítej, ${currentUser}!`;
-        renderNotes(); // Zobrazíme poznámky
+        await renderNotes(); // Zobrazíme poznámky (asynchronně)
     } else {
         // Uživatel není přihlášen
         authSection.classList.remove('hidden');
